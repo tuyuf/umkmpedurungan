@@ -38,6 +38,7 @@ interface UmkmFormProps {
   submitLabel?: string;
   showPhotoAlert?: boolean;
   redirectTo?: string;
+  hideAlamatPribadi?: boolean;
 }
 
 export function UmkmForm({
@@ -47,6 +48,7 @@ export function UmkmForm({
   submitLabel = "Simpan",
   showPhotoAlert: showPhotoAlertProp = true,
   redirectTo = "/daftar/sukses",
+  hideAlamatPribadi = false,
 }: UmkmFormProps) {
   const router = useRouter();
   const form = useForm<UmkmFormValues>({
@@ -61,7 +63,7 @@ export function UmkmForm({
       categoryId: "",
       thumbnailIndex: 0,
       showPhotoAlert: false,
-      socialLinks: [{ platform: "instagram", url: "" }],
+      socialLinks: [],
       images: [],
       ...defaultValues,
     },
@@ -80,6 +82,12 @@ export function UmkmForm({
     const valid = await form.trigger();
     if (!valid) {
       toast.error("Mohon lengkapi semua field yang diperlukan");
+      return;
+    }
+
+    const alamatPribadiValue = form.getValues("alamatPribadi");
+    if (!hideAlamatPribadi && (!alamatPribadiValue || alamatPribadiValue.trim().length < 5)) {
+      toast.error("Alamat pribadi pemilik minimal 5 karakter");
       return;
     }
     try {
@@ -198,27 +206,29 @@ export function UmkmForm({
             )}
           />
 
-          <Controller
-            name="alamatPribadi"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor={field.name} className={labelClass}>
-                  Alamat Pribadi Pemilik
-                </FieldLabel>
-                <Textarea
-                  {...field}
-                  id={field.name}
-                  aria-invalid={fieldState.invalid}
-                  placeholder="Alamat pribadi pemilik (untuk verifikasi)"
-                  className={`min-h-[80px] ${inputClass} resize-none`}
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
+          {!hideAlamatPribadi && (
+            <Controller
+              name="alamatPribadi"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name} className={labelClass}>
+                    Alamat Pribadi Pemilik
+                  </FieldLabel>
+                  <Textarea
+                    {...field}
+                    id={field.name}
+                    aria-invalid={fieldState.invalid}
+                    placeholder="Alamat pribadi pemilik (untuk verifikasi)"
+                    className={`min-h-[80px] ${inputClass} resize-none`}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          )}
 
           <div className="grid gap-5 md:grid-cols-2">
             <Controller
@@ -371,7 +381,7 @@ export function UmkmForm({
                 )}
               />
 
-              {fields.length > 1 && (
+              {fields.length > 0 && (
                 <Button
                   type="button"
                   variant="ghost"

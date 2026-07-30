@@ -173,7 +173,7 @@ export function UmkmCatalogSection({
         <div className="flex flex-col gap-6 mb-10">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <h2 className="font-display text-3xl md:text-5xl font-normal tracking-[-0.03em] text-foreground">
-              UMKM Lokal
+              UMKM Pedurungan Tengah
             </h2>
             <div className="hidden md:flex items-center gap-3">
               <SearchInput

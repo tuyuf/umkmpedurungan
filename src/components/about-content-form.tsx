@@ -65,7 +65,7 @@ export function AboutContentForm({
               {...field}
               id={field.name}
               aria-invalid={fieldState.invalid}
-              placeholder="Mendukung UMKM Lokal Indonesia"
+              placeholder="Mendukung UMKM Pedurungan Tengah Indonesia"
               className={inputClass}
             />
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}

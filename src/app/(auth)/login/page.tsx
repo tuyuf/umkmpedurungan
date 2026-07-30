@@ -118,7 +118,7 @@ export default function LoginPage() {
             href="/"
             className="text-lg font-display font-normal tracking-tight text-foreground"
           >
-            UMKM Lokal
+            UMKM Pedurungan Tengah
           </Link>
         </div>
 

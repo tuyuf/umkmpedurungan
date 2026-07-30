@@ -64,10 +64,10 @@ export const umkmFormSchema = z.object({
     .pipe(z.string().min(5, "Alamat minimal 5 karakter")),
   alamatPribadi: z
     .string()
-    .min(5, "Alamat pribadi minimal 5 karakter")
     .max(1000, "Alamat pribadi maksimal 1000 karakter")
     .transform((val) => sanitizeAlamat(val))
-    .pipe(z.string().min(5, "Alamat pribadi minimal 5 karakter")),
+    .optional()
+    .default(""),
   namaPemilik: z
     .string()
     .min(2, "Nama pemilik minimal 2 karakter")
@@ -94,8 +94,8 @@ export const umkmFormSchema = z.object({
   showPhotoAlert: z.boolean().default(false),
   socialLinks: z
     .array(socialLinkSchema)
-    .min(1, "Tambahkan minimal 1 tautan sosial media")
-    .max(10, "Maksimal 10 tautan"),
+    .max(10, "Maksimal 10 tautan")
+    .default([]),
   images: z.array(imageSchema).max(5, "Maksimal 5 gambar"),
 });
 

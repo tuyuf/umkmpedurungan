@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -25,7 +25,16 @@ export function UmkmCard({ umkm }: UmkmCardProps) {
   const mainImage =
     umkm.images[umkm.thumbnailIndex] || umkm.images[0];
   const [imageError, setImageError] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [isTruncated, setIsTruncated] = useState(false);
+  const descRef = useRef<HTMLParagraphElement>(null);
   const isActive = umkm.isActive !== false;
+
+  useEffect(() => {
+    if (descRef.current) {
+      setIsTruncated(descRef.current.scrollHeight > descRef.current.clientHeight);
+    }
+  }, []);
 
   return (
     <Link
@@ -67,7 +76,7 @@ export function UmkmCard({ umkm }: UmkmCardProps) {
           </span>
         )}
       </div>
-      <div className="flex-1 p-4">
+      <div className="flex flex-1 flex-col p-4">
         {!isActive && (
           <span className="mb-1.5 inline-block rounded bg-amber-600/90 px-2 py-0.5 text-[10px] font-semibold text-white uppercase tracking-[0.1em]">
             Sedang Libur
@@ -81,17 +90,34 @@ export function UmkmCard({ umkm }: UmkmCardProps) {
         >
           {umkm.namaUsaha}
         </h3>
-        <p
-          className={cn(
-            "mt-1 text-xs line-clamp-2",
-            isActive ? "text-muted-foreground" : "text-muted-foreground/50"
+        <div className="mt-1">
+          <p
+            ref={descRef}
+            className={cn(
+              "text-xs",
+              !expanded && "line-clamp-2",
+              isActive ? "text-muted-foreground" : "text-muted-foreground/50"
+            )}
+          >
+            {umkm.deskripsi}
+          </p>
+          {isTruncated && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setExpanded((prev) => !prev);
+              }}
+              className="mt-1 text-xs font-medium text-foreground/50 hover:text-foreground transition-colors"
+            >
+              {expanded ? "Sembunyikan" : "Selengkapnya"}
+            </button>
           )}
-        >
-          {umkm.deskripsi}
-        </p>
+        </div>
         <div
           className={cn(
-            "mt-2 flex items-center gap-1 text-xs",
+            "mt-auto pt-2 flex items-center gap-1 text-xs",
             isActive ? "text-muted-foreground" : "text-muted-foreground/50"
           )}
         >

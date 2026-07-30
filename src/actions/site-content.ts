@@ -11,7 +11,7 @@ export async function getAboutContent() {
   return (
     content ?? {
       id: "",
-      title: "Mendukung UMKM Lokal Indonesia",
+      title: "Mendukung UMKM Pedurungan Tengah Indonesia",
       paragraph1:
         "Platform ini hadir untuk memudahkan masyarakat menemukan dan mendukung usaha kecil menengah di sekitar mereka. Kami percaya setiap UMKM layak mendapatkan ruang untuk tumbuh dan terhubung dengan pelanggan baru.",
       paragraph2:
@@ -27,7 +27,18 @@ export async function getAboutContent() {
 export async function getAboutContentForAdmin() {
   await requireAdmin();
   const content = await prisma.aboutContent.findFirst();
-  return content;
+  return content ?? {
+    id: "",
+    title: "Mendukung UMKM Pedurungan Tengah Indonesia",
+    paragraph1:
+      "Platform ini hadir untuk memudahkan masyarakat menemukan dan mendukung usaha kecil menengah di sekitar mereka. Kami percaya setiap UMKM layak mendapatkan ruang untuk tumbuh dan terhubung dengan pelanggan baru.",
+    paragraph2:
+      "Mulai dari kuliner lokal, kerajinan tangan, hingga jasa profesional. Semuanya tersedia di satu tempat.",
+    ctaText: "Jelajahi UMKM",
+    ctaLink: "#umkm",
+    active: true,
+    updatedAt: new Date(),
+  };
 }
 
 export async function upsertAboutContent(data: {
@@ -74,7 +85,16 @@ export async function getMetricsContent() {
 export async function getMetricsContentForAdmin() {
   await requireAdmin();
   const content = await prisma.metricsContent.findFirst();
-  return content;
+  return content ?? {
+    id: "",
+    sectionTitle: "Komunitas yang Terus Bertumbuh",
+    label1: "UMKM Terdaftar",
+    label2: "UMKM Aktif",
+    label3: "Kategori",
+    label4: "Testimoni",
+    active: true,
+    updatedAt: new Date(),
+  };
 }
 
 export async function upsertMetricsContent(data: {

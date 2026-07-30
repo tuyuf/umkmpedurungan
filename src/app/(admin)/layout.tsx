@@ -106,7 +106,7 @@ export default function AdminLayout({
               href="/admin"
               className="text-sm font-display font-normal tracking-tight text-foreground"
             >
-              UMKM Lokal Admin
+              UMKM Pedurungan Tengah Admin
             </Link>
           </div>
           <div className="border-b border-border">
@@ -140,7 +140,7 @@ export default function AdminLayout({
             href="/admin"
             className="text-sm font-display font-normal tracking-tight text-foreground"
           >
-            UMKM Lokal Admin
+            UMKM Pedurungan Tengah Admin
           </Link>
           <Sheet>
             <SheetTrigger render={<Button variant="ghost" size="icon" />}>

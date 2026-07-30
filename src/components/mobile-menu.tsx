@@ -67,7 +67,7 @@ export function MobileMenu({ isOpen, onClose, menuItems }: MobileMenuProps) {
 
             <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-border">
               <p className="text-xs text-muted-foreground text-center tracking-[0.1em]">
-                &copy; {new Date().getFullYear()} UMKM Lokal
+                &copy; {new Date().getFullYear()} UMKM Pedurungan Tengah
               </p>
             </div>
           </motion.div>

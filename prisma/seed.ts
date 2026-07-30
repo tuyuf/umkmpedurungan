@@ -688,7 +688,7 @@ const testimonialData = [
 
 const bannerData = [
   {
-    title: "Dukung UMKM Lokal",
+    title: "Dukung UMKM Pedurungan Tengah",
     subtitle: "Temukan produk dan layanan terbaik dari pelaku usaha mikro, kecil, dan menengah di sekitar Anda.",
     link: null,
     image: "https://picsum.photos/seed/banner-dukung-umkm/1920/1080",
@@ -1125,7 +1125,7 @@ async function main() {
   } else {
     await prisma.aboutContent.create({
       data: {
-        title: "Mendukung UMKM Lokal Indonesia",
+        title: "Mendukung UMKM Pedurungan Tengah Indonesia",
         paragraph1:
           "Platform ini hadir untuk memudahkan masyarakat menemukan dan mendukung usaha kecil menengah di sekitar mereka. Kami percaya setiap UMKM layak mendapatkan ruang untuk tumbuh dan terhubung dengan pelanggan baru.",
         paragraph2:

@@ -91,7 +91,7 @@ export function Footer() {
         </div>
 
         <div className="footer-reveal flex flex-col md:flex-row justify-between items-center gap-4 font-sans text-xs text-muted-foreground tracking-[0.1em]">
-          <p>&copy; {new Date().getFullYear()} UMKM Lokal. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} UMKM Pedurungan Tengah. All rights reserved.</p>
           <div className="flex gap-8">
             <a href="#" className="hover:text-foreground transition-colors duration-150">
               Privacy

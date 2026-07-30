@@ -22,6 +22,7 @@ export default async function CreateUmkmPage() {
           onSubmit={handleSubmit}
           submitLabel="Tambah UMKM"
           redirectTo="/admin/umkm"
+          hideAlamatPribadi={true}
         />
       </div>
     </div>

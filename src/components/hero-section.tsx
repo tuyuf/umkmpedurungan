@@ -66,7 +66,7 @@ export function HeroSection() {
       <PageContainer>
         <div className="flex min-h-[70vh] flex-col items-center justify-center py-20 text-center md:min-h-[80vh]">
           <p className="hero-eyebrow mb-6 text-[11px] font-bold tracking-[0.25em] text-muted-foreground opacity-0">
-            Temukan UMKM Lokal
+            Temukan UMKM Pedurungan Tengah
           </p>
 
           <h1 className="hero-title mb-6 max-w-4xl font-display font-bold leading-[0.95] tracking-tight text-foreground opacity-0" style={{ fontSize: "clamp(3rem, 1.5rem + 5vw, 7rem)" }}>
