@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { MobileMenu } from "./mobile-menu";
-import { ThemeToggle } from "./theme-toggle";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -23,8 +22,8 @@ export function Navbar() {
           <Image
             src="/pedtengah.png"
             alt="Pedtengah"
-            width={1520}
-            height={419}
+            width={145}
+            height={40}
             loading="eager"
             className="h-10 w-auto md:hidden"
           />
@@ -46,8 +45,8 @@ export function Navbar() {
           <Image
             src="/pedtengah.png"
             alt="Pedtengah"
-            width={1520}
-            height={419}
+            width={203}
+            height={56}
             loading="eager"
             className="h-14 w-auto"
           />
@@ -63,7 +62,6 @@ export function Navbar() {
               {item.label}
             </Link>
           ))}
-          <ThemeToggle />
         </nav>
       </header>
 

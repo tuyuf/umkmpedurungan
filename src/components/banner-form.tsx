@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import Image from "next/image";
 import { Loader2, ArrowRight, Upload, X } from "lucide-react";
 import { useRef, useState, useCallback } from "react";
+import { transformCloudinaryUrl } from "@/lib/cloudinary";
 
 interface BannerFormProps {
   defaultValues?: Partial<BannerFormValues>;
@@ -116,9 +117,10 @@ export function BannerForm({
           {value ? (
             <div className="relative aspect-video overflow-hidden bg-surface-container-low border border-border">
               <Image
-                src={value}
+                src={transformCloudinaryUrl(value, "w_600,q_auto,f_auto")}
                 alt={label}
                 fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover"
               />
               <button

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { MapPin } from "lucide-react";
+import { transformCloudinaryUrl } from "@/lib/cloudinary";
 
 interface ProductCardProps {
   href: string;
@@ -29,9 +30,10 @@ export function ProductCard({
       <div className="relative aspect-[4/5] overflow-hidden bg-muted">
         {image ? (
           <Image
-            src={image}
+            src={transformCloudinaryUrl(image, "w_400,q_auto,f_auto")}
             alt={title}
             fill
+            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
         ) : (

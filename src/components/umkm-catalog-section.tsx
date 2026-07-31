@@ -36,7 +36,7 @@ interface Umkm {
   isActive?: boolean;
   images: UmkmImage[];
   categoryId: string | null;
-  socialLinks: { id: string; platform: string; url: string }[];
+  socialLinks?: { id: string; platform: string; url: string }[];
 }
 
 const SORT_OPTIONS: SortOption[] = [

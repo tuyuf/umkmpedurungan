@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
 import { MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { transformCloudinaryUrl } from "@/lib/cloudinary";
 
 interface UmkmCardProps {
   umkm: {
@@ -16,7 +17,7 @@ interface UmkmCardProps {
     thumbnailIndex: number;
     showPhotoAlert: boolean;
     isActive?: boolean;
-    socialLinks: { id: string; platform: string; url: string }[];
+    socialLinks?: { id: string; platform: string; url: string }[];
     images: { id: string; publicId: string; url: string; urutan: number }[];
   };
 }
@@ -49,9 +50,10 @@ export function UmkmCard({ umkm }: UmkmCardProps) {
       <div className="relative aspect-[4/5] overflow-hidden bg-muted">
         {mainImage && !imageError ? (
           <Image
-            src={mainImage.url}
+            src={transformCloudinaryUrl(mainImage.url, "w_400,q_auto,f_auto")}
             alt={umkm.namaUsaha}
             fill
+            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className={cn(
               "object-cover transition-transform duration-700",
               isActive ? "group-hover:scale-105" : "grayscale"

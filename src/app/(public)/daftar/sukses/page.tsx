@@ -10,7 +10,7 @@ export default async function DaftarSuksesPage() {
       <main className="pt-24">
         <section className="flex min-h-[60vh] items-center justify-center px-5 md:px-12">
           <div className="mx-auto max-w-md text-center">
-            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-400 dark:bg-emerald-500">
+            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-400">
               <CheckCircle className="h-10 w-10 text-white" />
             </div>
             <h1 className="mb-3 text-2xl font-display font-normal tracking-tight text-foreground">

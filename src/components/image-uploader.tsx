@@ -4,6 +4,7 @@ import Image from "next/image";
 import { ImagePlus, X, Loader2, Check } from "lucide-react";
 import { useRef, useState, useCallback } from "react";
 import { toast } from "sonner";
+import { transformCloudinaryUrl } from "@/lib/cloudinary";
 
 interface Image {
   publicId: string;
@@ -147,9 +148,10 @@ export function ImageUploader({
               onClick={() => onThumbnailChange?.(index)}
             >
               <Image
-                src={image.url}
+                src={transformCloudinaryUrl(image.url, "w_150,q_auto,f_auto")}
                 alt={`Gambar ${index + 1}`}
                 fill
+                sizes="150px"
                 className="object-cover"
               />
               {onThumbnailChange && thumbnailIndex === index && (

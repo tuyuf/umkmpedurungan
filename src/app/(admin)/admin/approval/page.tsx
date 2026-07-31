@@ -6,6 +6,7 @@ import { UmkmStatusBadge } from "@/components/umkm-status-badge";
 import { ApproveUmkmButton } from "@/components/approve-umkm-button";
 import { RejectUmkmButton } from "@/components/reject-umkm-button";
 import type { UmkmStatus } from "@/generated/prisma/client";
+import { transformCloudinaryUrl } from "@/lib/cloudinary";
 
 const statusTabs = [
   { label: "Pending", value: "PENDING" },
@@ -91,9 +92,10 @@ export default async function ApprovalPage({
                 <div className="relative h-16 w-20 flex-shrink-0 overflow-hidden rounded bg-muted">
                   {umkm.images?.[0]?.url ? (
                     <Image
-                      src={umkm.images[0].url}
+                      src={transformCloudinaryUrl(umkm.images[0].url, "w_80,q_auto,f_auto")}
                       alt=""
                       fill
+                      sizes="80px"
                       className="object-cover"
                     />
                   ) : (

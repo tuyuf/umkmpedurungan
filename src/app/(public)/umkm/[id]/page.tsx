@@ -1,3 +1,5 @@
+export const revalidate = 300;
+
 import { getUmkmById, getRandomUmkm } from "@/actions/umkm";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";

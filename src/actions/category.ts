@@ -1,15 +1,16 @@
 "use server";
 
+import { cache } from "react";
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/admin-auth";
 
-export async function getAllCategories() {
+export const getAllCategories = cache(async () => {
   return prisma.category.findMany({
     orderBy: { order: "asc" },
     include: { _count: { select: { umkms: true } } },
   });
-}
+});
 
 export async function getCategoryById(id: string) {
   const category = await prisma.category.findUnique({ where: { id } });
