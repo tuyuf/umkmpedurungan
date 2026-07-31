@@ -46,8 +46,8 @@ export function Footer() {
               <Image
                 src="/pedtengah.png"
                 alt="Pedtengah"
-                width={1520}
-                height={419}
+                width={348}
+                height={96}
                 className="h-24 w-auto"
               />
             </div>

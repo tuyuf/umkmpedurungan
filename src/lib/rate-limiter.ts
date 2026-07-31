@@ -1,32 +1,39 @@
-const rateMap = new Map<string, { count: number; resetAt: number }>();
+import { prisma } from "@/lib/db";
 
-export function rateLimit(
+export async function rateLimit(
   key: string,
   maxAttempts: number = 3,
   windowMs: number = 60 * 60 * 1000
-): { allowed: boolean; remaining: number; resetIn: number } {
-  const now = Date.now();
-  const entry = rateMap.get(key);
+): Promise<{ allowed: boolean; remaining: number; resetIn: number }> {
+  const now = new Date();
+  const expiresAt = new Date(now.getTime() + windowMs);
 
-  if (!entry || now > entry.resetAt) {
-    rateMap.set(key, { count: 1, resetAt: now + windowMs });
+  const result = await prisma.rateLimit.upsert({
+    where: { identifier: key },
+    update: { count: { increment: 1 } },
+    create: { identifier: key, count: 1, expiresAt },
+  });
+
+  if (now > result.expiresAt) {
+    await prisma.rateLimit.update({
+      where: { identifier: key },
+      data: { count: 1, expiresAt },
+    });
     return { allowed: true, remaining: maxAttempts - 1, resetIn: windowMs };
   }
 
-  entry.count += 1;
-
-  if (entry.count > maxAttempts) {
+  if (result.count > maxAttempts) {
     return {
       allowed: false,
       remaining: 0,
-      resetIn: entry.resetAt - now,
+      resetIn: result.expiresAt.getTime() - now.getTime(),
     };
   }
 
   return {
     allowed: true,
-    remaining: maxAttempts - entry.count,
-    resetIn: entry.resetAt - now,
+    remaining: maxAttempts - result.count,
+    resetIn: result.expiresAt.getTime() - now.getTime(),
   };
 }
 

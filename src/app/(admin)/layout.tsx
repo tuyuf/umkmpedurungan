@@ -97,43 +97,49 @@ export default function AdminLayout({
 }) {
   const pathname = usePathname();
 
+  const sidebar = (
+    <>
+      <div className="flex h-16 items-center border-b border-border px-6">
+        <Link
+          href="/admin"
+          className="text-sm font-display font-normal tracking-tight text-foreground"
+        >
+          UMKM Pedurungan Tengah Admin
+        </Link>
+      </div>
+      <div className="border-b border-border">
+        <UserSection />
+      </div>
+      <nav className="flex-1 space-y-0.5 p-3">
+        {navItems.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={`flex items-center gap-3 px-3 py-2.5 text-sm transition-colors duration-150 ${
+              pathname === item.href || pathname.startsWith(item.href + "/")
+                ? "bg-surface-container-high font-medium text-foreground"
+                : "text-muted-foreground hover:bg-surface-container-high hover:text-foreground"
+            }`}
+          >
+            <item.icon className="h-4 w-4" />
+            {item.label}
+          </Link>
+        ))}
+      </nav>
+      <div className="border-t border-border p-3">
+        <LogoutButton />
+      </div>
+    </>
+  );
+
   return (
     <div className="flex min-h-screen bg-background">
-      <aside className="hidden w-64 border-r border-border bg-background lg:block">
-        <div className="flex h-full flex-col">
-          <div className="flex h-16 items-center border-b border-border px-6">
-            <Link
-              href="/admin"
-              className="text-sm font-display font-normal tracking-tight text-foreground"
-            >
-              UMKM Pedurungan Tengah Admin
-            </Link>
-          </div>
-          <div className="border-b border-border">
-            <UserSection />
-          </div>
-          <nav className="flex-1 space-y-0.5 p-3">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-3 px-3 py-2.5 text-sm transition-colors duration-150 ${
-                  pathname === item.href || pathname.startsWith(item.href + "/")
-                    ? "bg-surface-container-high font-medium text-foreground"
-                    : "text-muted-foreground hover:bg-surface-container-high hover:text-foreground"
-                }`}
-              >
-                <item.icon className="h-4 w-4" />
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-          <div className="border-t border-border p-3">
-            <LogoutButton />
-          </div>
-        </div>
+      {/* Desktop sidebar */}
+      <aside className="hidden w-64 border-r border-border bg-background lg:flex lg:flex-col">
+        {sidebar}
       </aside>
 
+      {/* Mobile layout */}
       <div className="flex flex-1 flex-col lg:hidden">
         <header className="flex h-16 items-center justify-between border-b border-border bg-background px-4">
           <Link
@@ -147,34 +153,14 @@ export default function AdminLayout({
               <Menu className="h-5 w-5" />
             </SheetTrigger>
             <SheetContent side="left" className="w-64 p-0 bg-background">
-              <div className="border-b border-border">
-                <UserSection />
-              </div>
-              <nav className="mt-2 space-y-0.5 px-3">
-                {navItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`flex items-center gap-3 px-3 py-2.5 text-sm transition-colors duration-150 ${
-                      pathname === item.href || pathname.startsWith(item.href + "/")
-                        ? "bg-surface-container-high font-medium text-foreground"
-                        : "text-muted-foreground hover:bg-surface-container-high hover:text-foreground"
-                    }`}
-                  >
-                    <item.icon className="h-4 w-4" />
-                    {item.label}
-                  </Link>
-                ))}
-              </nav>
-              <div className="border-t border-border p-3">
-                <LogoutButton />
-              </div>
+              {sidebar}
             </SheetContent>
           </Sheet>
         </header>
         <main className="flex-1 p-6">{children}</main>
       </div>
 
+      {/* Desktop main */}
       <main className="hidden flex-1 p-8 lg:block">{children}</main>
     </div>
   );

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { transformCloudinaryUrl } from "@/lib/cloudinary";
 
 interface UmkmImage {
   id: string;
@@ -47,14 +48,15 @@ export function UmkmDetailClient({
             transition={{ duration: 0.3 }}
             className="relative w-full h-full"
           >
-            <Image
-              src={selectedImage.url}
-              alt={namaUsaha}
-              width={800}
-              height={1000}
-              className="h-full w-full object-cover"
-              priority
-            />
+              <Image
+                src={transformCloudinaryUrl(selectedImage.url, "w_800,q_auto,f_auto")}
+                alt={namaUsaha}
+                width={800}
+                height={1000}
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="h-full w-full object-cover"
+                priority
+              />
           </motion.div>
         </AnimatePresence>
       </div>
@@ -73,10 +75,11 @@ export function UmkmDetailClient({
               }`}
             >
               <Image
-                src={img.url}
+                src={transformCloudinaryUrl(img.url, "w_80,q_auto,f_auto")}
                 alt={`${namaUsaha} ${img.urutan}`}
                 width={80}
                 height={80}
+                sizes="80px"
                 className="h-full w-full object-cover"
               />
             </button>

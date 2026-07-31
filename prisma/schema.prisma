@@ -106,6 +106,9 @@ model Umkm {
   images          UmkmImage[]
 
   @@index([categoryId])
+  @@index([status])
+  @@index([isActive])
+  @@index([isActive, status])
   @@map("umkm")
 }
 
@@ -116,6 +119,7 @@ model SocialLink {
   url      String
   umkm     Umkm   @relation(fields: [umkmId], references: [id], onDelete: Cascade)
 
+  @@index([umkmId])
   @@map("social_links")
 }
 
@@ -128,6 +132,7 @@ model UmkmImage {
   createdAt DateTime @default(now()) @map("created_at")
   umkm      Umkm     @relation(fields: [umkmId], references: [id], onDelete: Cascade)
 
+  @@index([umkmId])
   @@map("umkm_images")
 }
 
@@ -195,4 +200,13 @@ model MetricsContent {
   updatedAt    DateTime @updatedAt @map("updated_at")
 
   @@map("metrics_content")
+}
+
+model RateLimit {
+  id        String   @id @default(cuid())
+  identifier String  @unique
+  count     Int
+  expiresAt DateTime @map("expires_at")
+
+  @@map("rate_limits")
 }

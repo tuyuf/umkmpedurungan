@@ -1,4 +1,4 @@
-import { getAllUmkm } from "@/actions/umkm";
+import { getUmkmCards } from "@/actions/umkm";
 import { getAllCategories } from "@/actions/category";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
@@ -16,7 +16,7 @@ export default async function UmkmPage({
   const currentPage = Math.max(1, Number(params.page) || 1);
 
   const [{ data: umkmList, totalPages }, categories] = await Promise.all([
-    getAllUmkm(currentPage, search, categoryId, sortBy, "", false),
+    getUmkmCards(currentPage, search, categoryId, sortBy, "", 12),
     getAllCategories(),
   ]);
 

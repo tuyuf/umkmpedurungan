@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table";
 import { DeleteBannerButton } from "./delete-banner-button";
 import Image from "next/image";
+import { transformCloudinaryUrl } from "@/lib/cloudinary";
 
 export default async function BannersPage() {
   const banners = await getAllBanners();
@@ -65,10 +66,11 @@ export default async function BannersPage() {
                     <div className="w-20 h-12 overflow-hidden rounded bg-muted">
                       {b.image ? (
                         <Image
-                          src={b.image}
+                          src={transformCloudinaryUrl(b.image, "w_160,q_auto,f_auto")}
                           alt={b.title || "Banner"}
                           width={80}
                           height={48}
+                          sizes="80px"
                           className="w-full h-full object-cover"
                         />
                       ) : (

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import { GeistSans } from "geist/font/sans";
-import { ThemeProvider } from "@/lib/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { SplashScreen } from "@/components/splash-screen";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -26,17 +25,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = await cookies();
-  const themeCookie = cookieStore.get("theme")?.value || "system";
-  const isDark = themeCookie === "dark";
-
   return (
-    <html lang="id" className={`h-full antialiased ${GeistSans.className}${isDark ? " dark" : ""}`} suppressHydrationWarning>
+    <html lang="id" className={`h-full antialiased ${GeistSans.className}`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col font-sans">
-        <ThemeProvider>
+        <div className="relative min-h-full">
           {children}
-          <Toaster />
-        </ThemeProvider>
+          <SplashScreen />
+        </div>
+        <Toaster />
       </body>
     </html>
   );

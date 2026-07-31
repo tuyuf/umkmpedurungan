@@ -1,11 +1,12 @@
 "use server";
 
+import { cache } from "react";
 import { prisma } from "@/lib/db";
 import { umkmFormSchema, type UmkmFormValues } from "@/lib/schemas";
 import { rateLimit, getSubmissionKey } from "@/lib/rate-limiter";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
-import type { UmkmStatus, Prisma } from "@/generated/prisma/client";
+import { Prisma, UmkmStatus } from "@/generated/prisma/client";
 import { requireAdmin } from "@/lib/admin-auth";
 
 const CUID_REGEX = /^c[^\s-]{8,}$/;
@@ -13,6 +14,60 @@ const CUID_REGEX = /^c[^\s-]{8,}$/;
 function isValidCuid(id: string): boolean {
   return CUID_REGEX.test(id) && id.length >= 8 && id.length <= 30;
 }
+
+export const getUmkmCards = cache(async (
+  page = 1,
+  search = "",
+  categoryId = "",
+  sortBy = "newest",
+  location = "",
+  take = 12,
+) => {
+  const skip = (page - 1) * take;
+
+  const where: Prisma.UmkmWhereInput = {
+    isActive: true,
+    status: "APPROVED",
+  };
+
+  if (search) {
+    where.OR = [
+      { namaUsaha: { contains: search, mode: "insensitive" as const } },
+      { deskripsi: { contains: search, mode: "insensitive" as const } },
+      { namaPemilik: { contains: search, mode: "insensitive" as const } },
+    ];
+  }
+
+  if (categoryId) {
+    where.categoryId = categoryId;
+  }
+
+  if (location) {
+    where.alamat = { contains: location, mode: "insensitive" as const };
+  }
+
+  const orderBy: Prisma.UmkmOrderByWithRelationInput | Prisma.UmkmOrderByWithRelationInput[] = [getOrderBy(sortBy)];
+
+  const [umkmList, total] = await Promise.all([
+    prisma.umkm.findMany({
+      where,
+      include: {
+        images: { orderBy: { urutan: "asc" } },
+        category: true,
+      },
+      orderBy,
+      skip,
+      take,
+    }),
+    prisma.umkm.count({ where }),
+  ]);
+
+  return {
+    data: umkmList,
+    totalPages: Math.ceil(total / take),
+    currentPage: page,
+  };
+});
 
 export async function getAllUmkm(
   page = 1,
@@ -154,7 +209,7 @@ export async function createUmkm(data: UmkmFormValues) {
 export async function submitUmkm(data: UmkmFormValues) {
   const headersList = await headers();
   const ip = headersList.get("x-forwarded-for") || headersList.get("x-real-ip") || "anonymous";
-  const { allowed, remaining } = rateLimit(getSubmissionKey(ip), 3, 60 * 60 * 1000);
+  const { allowed, remaining } = await rateLimit(getSubmissionKey(ip), 3, 60 * 60 * 1000);
 
   if (!allowed) {
     throw new Error(
@@ -219,36 +274,46 @@ export async function updateUmkm(id: string, data: UmkmFormValues, updatedAt?: D
 
   const validated = umkmFormSchema.parse(data);
 
-  await prisma.socialLink.deleteMany({ where: { umkmId: id } });
-  await prisma.umkmImage.deleteMany({ where: { umkmId: id } });
+  await prisma.$transaction(async (tx) => {
+    await tx.socialLink.deleteMany({ where: { umkmId: id } });
+    await tx.umkmImage.deleteMany({ where: { umkmId: id } });
 
-  await prisma.umkm.update({
-    where: { id },
-    data: {
-      namaUsaha: validated.namaUsaha,
-      deskripsi: validated.deskripsi,
-      alamat: validated.alamat,
-      alamatPribadi: validated.alamatPribadi,
-      namaPemilik: validated.namaPemilik,
-      whatsapp: validated.whatsapp,
-      tanggalMulai: validated.tanggalMulai,
-      thumbnailIndex: validated.thumbnailIndex,
-      showPhotoAlert: validated.showPhotoAlert,
-      categoryId: validated.categoryId || null,
-      socialLinks: {
-        create: validated.socialLinks.map((link) => ({
+    await tx.umkm.update({
+      where: { id },
+      data: {
+        namaUsaha: validated.namaUsaha,
+        deskripsi: validated.deskripsi,
+        alamat: validated.alamat,
+        alamatPribadi: validated.alamatPribadi,
+        namaPemilik: validated.namaPemilik,
+        whatsapp: validated.whatsapp,
+        tanggalMulai: validated.tanggalMulai,
+        thumbnailIndex: validated.thumbnailIndex,
+        showPhotoAlert: validated.showPhotoAlert,
+        categoryId: validated.categoryId || null,
+      },
+    });
+
+    if (validated.socialLinks.length > 0) {
+      await tx.socialLink.createMany({
+        data: validated.socialLinks.map((link) => ({
+          umkmId: id,
           platform: link.platform,
           url: link.url,
         })),
-      },
-      images: {
-        create: validated.images.map((img, index) => ({
+      });
+    }
+
+    if (validated.images.length > 0) {
+      await tx.umkmImage.createMany({
+        data: validated.images.map((img, index) => ({
+          umkmId: id,
           publicId: img.publicId,
           url: img.url,
           urutan: index + 1,
         })),
-      },
-    },
+      });
+    }
   });
 
   revalidatePath("/");
@@ -324,19 +389,24 @@ export async function toggleUmkmStatus(id: string) {
 }
 
 export async function getRandomUmkm(count = 4, excludeId?: string) {
-  const all = await prisma.umkm.findMany({
-    where: {
-      isActive: true,
-      status: "APPROVED",
-      ...(excludeId ? { id: { not: excludeId } } : {}),
-    },
+  const ids: { id: string }[] = await prisma.$queryRaw`
+    SELECT id FROM umkm
+    WHERE is_active = true AND status = 'APPROVED'
+    ${excludeId ? Prisma.sql`AND id != ${excludeId}` : Prisma.empty}
+    ORDER BY RANDOM()
+    LIMIT ${count}
+  `;
+
+  if (ids.length === 0) return [];
+
+  const umkms = await prisma.umkm.findMany({
+    where: { id: { in: ids.map(i => i.id) } },
     include: {
       images: { orderBy: { urutan: "asc" }, take: 1 },
     },
   });
 
-  const shuffled = all.sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, count);
+  return umkms;
 }
 
 export async function deleteUmkm(id: string) {

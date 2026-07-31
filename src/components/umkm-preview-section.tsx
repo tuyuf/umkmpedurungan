@@ -24,7 +24,7 @@ interface Umkm {
   showPhotoAlert: boolean;
   isActive?: boolean;
   images: UmkmImage[];
-  socialLinks: { id: string; platform: string; url: string }[];
+  socialLinks?: { id: string; platform: string; url: string }[];
 }
 
 interface UmkmPreviewSectionProps {

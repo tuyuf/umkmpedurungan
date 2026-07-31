@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ScrollReveal } from "./scroll-reveal";
 import { Button } from "./ui/button";
+import { transformCloudinaryUrl } from "@/lib/cloudinary";
 
 interface Testimonial {
   id: string;
@@ -69,7 +70,7 @@ export function TestimonialSection({ testimonials }: TestimonialSectionProps) {
                 <div className="flex items-center gap-3 mt-auto">
                   {testimonial.avatar ? (
                     <Image
-                      src={testimonial.avatar}
+                      src={transformCloudinaryUrl(testimonial.avatar, "w_80,q_auto,f_auto")}
                       alt={testimonial.author}
                       width={40}
                       height={40}

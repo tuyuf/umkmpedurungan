@@ -1,6 +1,8 @@
+export const revalidate = 300;
+
 import { getActiveBanners } from "@/actions/banner";
 import { getAllTestimonials } from "@/actions/testimonial";
-import { getAllUmkm } from "@/actions/umkm";
+import { getUmkmCards } from "@/actions/umkm";
 import { getStats } from "@/actions/stats";
 import { getAboutContent, getMetricsContent } from "@/actions/site-content";
 import { Navbar } from "@/components/navbar";
@@ -16,7 +18,7 @@ export default async function HomePage() {
   const [banners, { data: umkmList }, testimonials, stats, aboutContent, metricsContent] =
     await Promise.all([
       getActiveBanners(),
-      getAllUmkm(1, "", "", "newest", "", false),
+      getUmkmCards(1, "", "", "newest", "", 8),
       getAllTestimonials(),
       getStats(),
       getAboutContent(),

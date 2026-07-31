@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { transformCloudinaryUrl } from "@/lib/cloudinary";
 
 interface HeroBanner {
   id: string;
@@ -63,7 +64,7 @@ export function HeroBlock({ banners }: HeroBlockProps) {
         >
           {bgImage && (
             <Image
-              src={bgImage}
+              src={transformCloudinaryUrl(bgImage, "w_1920,q_auto,f_auto")}
               alt={banner.title || "Banner"}
               fill
               className="object-cover"
