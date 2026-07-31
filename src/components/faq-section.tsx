@@ -15,9 +15,9 @@ const faqs = [
         <p className="font-sans text-sm text-muted-foreground leading-relaxed">
           Dengan mengisi form pendaftaran melalui tombol di bawah ini:
         </p>
-        <Link href="/daftar">
+        <Link href="/formulir">
           <Button variant="outline" size="sm">
-            Isi Form Pendaftaran
+            Isi Formulir Pendaftaran
           </Button>
         </Link>
       </div>

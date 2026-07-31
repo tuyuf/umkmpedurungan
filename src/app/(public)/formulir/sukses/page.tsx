@@ -3,7 +3,7 @@ import { Footer } from "@/components/footer";
 import { CheckCircle } from "lucide-react";
 import Link from "next/link";
 
-export default async function DaftarSuksesPage() {
+export default async function FormulirSuksesPage() {
   return (
     <>
       <Navbar />

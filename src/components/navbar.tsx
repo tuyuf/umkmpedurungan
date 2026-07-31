@@ -8,7 +8,7 @@ import Image from "next/image";
 const menuItems = [
   { label: "Home", link: "/" },
   { label: "UMKM", link: "/umkm" },
-  { label: "Daftar UMKM", link: "/daftar" },
+  { label: "Formulir UMKM", link: "/formulir" },
 ];
 
 export function Navbar() {
