@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer";
 import { UmkmForm } from "@/components/umkm-form";
 import type { UmkmFormValues } from "@/lib/schemas";
 
-export default async function DaftarUmkmPage() {
+export default async function FormulirUmkmPage() {
   const categories = await getAllCategories();
 
   async function handleSubmit(data: UmkmFormValues) {
@@ -20,7 +20,7 @@ export default async function DaftarUmkmPage() {
         <section className="relative pt-8 pb-4 md:pt-12 md:pb-6">
           <div className="mx-auto max-w-2xl px-5 md:px-12 text-center">
             <h1 className="text-3xl md:text-5xl font-display font-normal tracking-tight text-foreground mb-3">
-              Daftarkan UMKM Anda
+              Formulir UMKM
             </h1>
             <p className="text-sm md:text-base text-muted-foreground">
               Isi data usaha Anda dengan lengkap. Setelah dikirim, tim admin akan

@@ -47,7 +47,7 @@ export function UmkmForm({
   onSubmit,
   submitLabel = "Simpan",
   showPhotoAlert: showPhotoAlertProp = true,
-  redirectTo = "/daftar/sukses",
+  redirectTo = "/formulir/sukses",
   hideAlamatPribadi = false,
 }: UmkmFormProps) {
   const router = useRouter();
