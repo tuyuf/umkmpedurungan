@@ -31,7 +31,7 @@ export default async function UmkmDetailPage({
     notFound();
   }
 
-  if (umkm.status !== "APPROVED" || !umkm.isActive) {
+  if (umkm.status !== "APPROVED") {
     notFound();
   }
 

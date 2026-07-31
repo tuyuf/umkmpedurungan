@@ -26,7 +26,6 @@ export const getUmkmCards = cache(async (
   const skip = (page - 1) * take;
 
   const where: Prisma.UmkmWhereInput = {
-    isActive: true,
     status: "APPROVED",
   };
 
@@ -46,7 +45,7 @@ export const getUmkmCards = cache(async (
     where.alamat = { contains: location, mode: "insensitive" as const };
   }
 
-  const orderBy: Prisma.UmkmOrderByWithRelationInput | Prisma.UmkmOrderByWithRelationInput[] = [getOrderBy(sortBy)];
+  const orderBy: Prisma.UmkmOrderByWithRelationInput | Prisma.UmkmOrderByWithRelationInput[] = [{ isActive: "desc" as const }, getOrderBy(sortBy)];
 
   const [umkmList, total] = await Promise.all([
     prisma.umkm.findMany({
@@ -391,7 +390,7 @@ export async function toggleUmkmStatus(id: string) {
 export async function getRandomUmkm(count = 4, excludeId?: string) {
   const ids: { id: string }[] = await prisma.$queryRaw`
     SELECT id FROM umkm
-    WHERE is_active = true AND status = 'APPROVED'
+    WHERE status = 'APPROVED'
     ${excludeId ? Prisma.sql`AND id != ${excludeId}` : Prisma.empty}
     ORDER BY RANDOM()
     LIMIT ${count}
