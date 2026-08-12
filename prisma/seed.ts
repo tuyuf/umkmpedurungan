@@ -1,5 +1,6 @@
 import { PrismaClient } from "../src/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { rw06UmkmData, rw06ImageLinks } from "./rw06-data";
 
 const connectionString = process.env.DATABASE_URL!;
 const adapter = new PrismaPg({ connectionString });
@@ -31,6 +32,7 @@ const umkmData: Array<{
   categorySlug: string;
   socialLinksCount: number;
   hasImages: boolean;
+  isActive?: boolean;
 }> = [
   {
     namaUsaha: "Warung Bu Sari",
@@ -632,6 +634,7 @@ const umkmData: Array<{
     socialLinksCount: 2,
     hasImages: false,
   },
+  ...rw06UmkmData,
 ];
 
 const socialLinkTemplates: Record<string, string[]> = {
@@ -1027,6 +1030,7 @@ const umkmImageLinks: Array<{
       { publicId: "umkm/toko-manisan-1", url: "https://picsum.photos/seed/umkm-toko-manisan-1/800/600", urutan: 0 },
     ],
   },
+  ...rw06ImageLinks,
 ];
 
 async function main() {
@@ -1071,6 +1075,7 @@ async function main() {
         tanggalMulai: data.tanggalMulai,
         showPhotoAlert: data.showPhotoAlert,
         thumbnailIndex: 0,
+        isActive: data.isActive ?? true,
         categoryId: categoryMap[data.categorySlug] || null,
         socialLinks: {
           create: socialLinks,
