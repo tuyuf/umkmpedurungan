@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { requireAdmin } from "@/lib/admin-auth";
+import { requireAdmin, logAdminAction } from "@/lib/admin-auth";
 
 export async function getAllBanners() {
   await requireAdmin();
@@ -42,6 +42,14 @@ export async function createBanner(data: {
   });
   revalidatePath("/");
   revalidatePath("/banners");
+
+  await logAdminAction({
+    action: "CREATE",
+    entityType: "BANNER",
+    entityId: banner.id,
+    detail: { title: banner.title ?? null },
+  });
+
   return banner;
 }
 
@@ -64,12 +72,32 @@ export async function updateBanner(
   });
   revalidatePath("/");
   revalidatePath("/banners");
+
+  await logAdminAction({
+    action: "UPDATE",
+    entityType: "BANNER",
+    entityId: id,
+    detail: { title: banner.title ?? null, active: banner.active },
+  });
+
   return banner;
 }
 
 export async function deleteBanner(id: string) {
   await requireAdmin();
+  const existing = await prisma.heroBanner.findUnique({
+    where: { id },
+    select: { id: true, title: true },
+  });
   await prisma.heroBanner.delete({ where: { id } });
+
+  await logAdminAction({
+    action: "DELETE",
+    entityType: "BANNER",
+    entityId: id,
+    detail: existing ? { title: existing.title ?? null } : undefined,
+  });
+
   revalidatePath("/");
   revalidatePath("/banners");
 }
