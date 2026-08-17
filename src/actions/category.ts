@@ -3,7 +3,7 @@
 import { cache } from "react";
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { requireAdmin } from "@/lib/admin-auth";
+import { requireAdmin, logAdminAction } from "@/lib/admin-auth";
 
 export const getAllCategories = cache(async () => {
   return prisma.category.findMany({
@@ -30,6 +30,14 @@ export async function createCategory(data: { name: string; slug: string }) {
   });
   revalidatePath("/");
   revalidatePath("/umkm");
+
+  await logAdminAction({
+    action: "CREATE",
+    entityType: "CATEGORY",
+    entityId: category.id,
+    detail: { name: category.name, slug: category.slug },
+  });
+
   return category;
 }
 
@@ -44,11 +52,23 @@ export async function updateCategory(
   });
   revalidatePath("/");
   revalidatePath("/umkm");
+
+  await logAdminAction({
+    action: "UPDATE",
+    entityType: "CATEGORY",
+    entityId: id,
+    detail: { name: category.name, slug: category.slug },
+  });
+
   return category;
 }
 
 export async function deleteCategory(id: string) {
   await requireAdmin();
+  const existing = await prisma.category.findUnique({
+    where: { id },
+    select: { id: true, name: true, slug: true },
+  });
   const umkmsCount = await prisma.umkm.count({
     where: { categoryId: id },
   });
@@ -58,6 +78,14 @@ export async function deleteCategory(id: string) {
     );
   }
   await prisma.category.delete({ where: { id } });
+
+  await logAdminAction({
+    action: "DELETE",
+    entityType: "CATEGORY",
+    entityId: id,
+    detail: existing ? { name: existing.name, slug: existing.slug } : undefined,
+  });
+
   revalidatePath("/");
   revalidatePath("/umkm");
 }

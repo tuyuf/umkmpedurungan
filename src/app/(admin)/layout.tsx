@@ -18,6 +18,7 @@ import {
   BarChart3,
   User,
   ClipboardCheck,
+  ScrollText,
 } from "lucide-react";
 
 const navItems = [
@@ -28,6 +29,7 @@ const navItems = [
   { href: "/banners", label: "Hero Banners", icon: Image },
   { href: "/about", label: "Tentang", icon: Info },
   { href: "/metrics", label: "Statistik", icon: BarChart3 },
+  { href: "/admin/logs", label: "Log Aktivitas", icon: ScrollText },
 ];
 
 function UserSection() {

@@ -116,6 +116,7 @@ export default async function UmkmDetailPage({
                   </div>
                 </div>
 
+                {umkm.isActive !== false && (
                 <div className="flex items-start gap-3">
                   <Calendar className="mt-0.5 h-4 w-4 text-muted-foreground" />
                   <div>
@@ -128,6 +129,7 @@ export default async function UmkmDetailPage({
                     <p className="text-xs text-muted-foreground tracking-wider">Tanggal Mulai</p>
                   </div>
                 </div>
+                )}
               </div>
 
               {umkm.socialLinks.length > 0 && (

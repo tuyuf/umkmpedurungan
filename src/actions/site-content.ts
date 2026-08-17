@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { requireAdmin } from "@/lib/admin-auth";
+import { requireAdmin, logAdminAction } from "@/lib/admin-auth";
 
 const ABOUT_FALLBACK = {
   id: "",
@@ -44,6 +44,13 @@ export async function upsertAboutContent(data: {
       data: { ...data, active: true },
     });
   }
+
+  await logAdminAction({
+    action: "UPSERT",
+    entityType: "ABOUT_CONTENT",
+    detail: { ...data },
+  });
+
   revalidatePath("/");
   revalidatePath("/about");
 }
@@ -86,6 +93,13 @@ export async function upsertMetricsContent(data: {
       data: { ...data, active: true },
     });
   }
+
+  await logAdminAction({
+    action: "UPSERT",
+    entityType: "METRICS_CONTENT",
+    detail: { ...data },
+  });
+
   revalidatePath("/");
   revalidatePath("/metrics");
 }

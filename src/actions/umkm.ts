@@ -7,7 +7,7 @@ import { rateLimit, getSubmissionKey } from "@/lib/rate-limiter";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { Prisma, UmkmStatus } from "@/generated/prisma/client";
-import { requireAdmin } from "@/lib/admin-auth";
+import { logAdminAction, requireAdmin } from "@/lib/admin-auth";
 
 const CUID_REGEX = /^c[^\s-]{8,}$/;
 
@@ -202,6 +202,13 @@ export async function createUmkm(data: UmkmFormValues) {
   revalidatePath("/umkm");
   revalidatePath("/admin/umkm");
 
+  await logAdminAction({
+    action: "CREATE",
+    entityType: "UMKM",
+    entityId: umkm.id,
+    detail: { namaUsaha: umkm.namaUsaha, status: umkm.status },
+  });
+
   return umkm;
 }
 
@@ -320,6 +327,20 @@ export async function updateUmkm(id: string, data: UmkmFormValues, updatedAt?: D
   revalidatePath("/dashboard");
   revalidatePath("/umkm");
   revalidatePath("/admin/umkm");
+
+  await logAdminAction({
+    action: "UPDATE",
+    entityType: "UMKM",
+    entityId: id,
+    detail: {
+      namaUsaha: validated.namaUsaha,
+      deskripsi: validated.deskripsi,
+      alamat: validated.alamat,
+      namaPemilik: validated.namaPemilik,
+      whatsapp: validated.whatsapp,
+      categoryId: validated.categoryId || null,
+    },
+  });
 }
 
 export async function approveUmkm(id: string) {
@@ -342,6 +363,13 @@ export async function approveUmkm(id: string) {
   revalidatePath("/");
   revalidatePath("/umkm");
   revalidatePath("/admin/umkm");
+
+  await logAdminAction({
+    action: "APPROVE",
+    entityType: "UMKM",
+    entityId: id,
+    detail: { status: "APPROVED", isActive: true },
+  });
 }
 
 export async function rejectUmkm(id: string, reason?: string) {
@@ -363,6 +391,13 @@ export async function rejectUmkm(id: string, reason?: string) {
   });
 
   revalidatePath("/admin/umkm");
+
+  await logAdminAction({
+    action: "REJECT",
+    entityType: "UMKM",
+    entityId: id,
+    detail: { status: "REJECTED", reason: reason || null },
+  });
 }
 
 export async function toggleUmkmStatus(id: string) {
@@ -383,6 +418,13 @@ export async function toggleUmkmStatus(id: string) {
   revalidatePath("/");
   revalidatePath("/umkm");
   revalidatePath("/admin/umkm");
+
+  await logAdminAction({
+    action: "TOGGLE_STATUS",
+    entityType: "UMKM",
+    entityId: id,
+    detail: { isActive: !umkm.isActive },
+  });
 
   return { isActive: !umkm.isActive };
 }
@@ -412,7 +454,19 @@ export async function deleteUmkm(id: string) {
   await requireAdmin();
   if (!isValidCuid(id)) throw new Error("ID tidak valid");
 
+  const umkm = await prisma.umkm.findUnique({
+    where: { id },
+    select: { id: true, namaUsaha: true },
+  });
+
   await prisma.umkm.delete({ where: { id } });
+
+  await logAdminAction({
+    action: "DELETE",
+    entityType: "UMKM",
+    entityId: id,
+    detail: umkm ? { namaUsaha: umkm.namaUsaha } : undefined,
+  });
 
   revalidatePath("/");
   revalidatePath("/dashboard");
